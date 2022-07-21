@@ -1,0 +1,56 @@
+version: "3.6"
+services:
+  uc-service:
+    container_name: "uc-service"
+    build: .
+    command: sh -c "sleep 5 && npm run prisma:migrate:deploy && npm run start"
+    depends_on:
+      - uc-postgres
+      - uc-rabbitmq
+    env_file:
+     - .env
+    environment:
+      DATABASE_URL: "postgresql://admin:admin@uc-postgres:5432/uc?schema=public"
+      RABBIT_MQ_URL: "amqp://uc-rabbitmq:5672"
+    ports:
+      - "${PORT:-3000}:${PORT:-3000}"
+    networks:
+      - uc-network
+
+  uc-postgres:
+    image: "postgres:14"
+    container_name: "uc-postgres"
+    environment:
+      POSTGRES_DB: "uc"
+      POSTGRES_USER: "admin"
+      POSTGRES_PASSWORD: "admin"
+    ports:
+      - "5432:5432"
+    volumes:
+      - uc-pgdata:/var/lib/postgresql/data
+    networks:
+      - uc-network
+
+  uc-rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: 'uc-rabbitmq'
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq/
+      - rabbitmq_log:/var/log/rabbitmq/
+    networks:
+        - uc-network
+  
+volumes:
+  uc-pgdata:
+    driver: local
+  rabbitmq_data:
+    driver: local
+  rabbitmq_log:
+    driver: local
+
+networks:
+  uc-network:
+    driver: bridge

@@ -1,0 +1,120 @@
+{
+	"info": {
+		"_postman_id": "e37ad073-f654-4ae3-aed4-e3d9e75af52e",
+		"name": "Unleashedcapital",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "13199511"
+	},
+	"item": [
+		{
+			"name": "Account Balance",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/account/6ae49205-6255-4f57-a456-8fef186f5833/balance",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"account",
+						"6ae49205-6255-4f57-a456-8fef186f5833",
+						"balance"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Account Create",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n \"balance\": 10,\n \"coefficient\": 100\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/account",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"account"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Transfer Money",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"amount\": 10,\n    \"accountIdTo\": \"9f3ed014-5de8-46c1-84b0-070878b9eb13\",\n    \"accountIdFrom\": \"362d15f4-1c55-4574-bf58-82ebba3a27ae\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/transaction/transfer",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"transaction",
+						"transfer"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Transaction Status",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"amount\": 1,\n    \"accountIdTo\": \"fede8bb2-2a4a-4042-8fda-6198660ff51a\",\n    \"accountIdFrom\": \"953c57bf-c4e6-490e-856e-aaf06d61563f\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/transaction/2dbc1774-78f4-4705-930c-a356c5d8c461",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"transaction",
+						"2dbc1774-78f4-4705-930c-a356c5d8c461"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

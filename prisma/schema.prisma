@@ -1,0 +1,106 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["interactiveTransactions"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// -------------- Account
+enum AccountStatus {
+  Active
+  Inactive
+}
+
+model Account {
+  @@map("accounts")
+
+  id             String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  //
+  status         AccountStatus @default(Active)
+  balance        Int      @default(0)
+  coefficient    Int      @default(100)  // real balance = balance / coefficient
+  //
+  accountHistory  AccountHistory[]
+  transactionFrom Transaction[] @relation("accountFrom")
+  transactionTo   Transaction[] @relation("accountTo")
+  //
+  createdAt      DateTime @map("created_at")  @default(now())
+  updatedAt      DateTime @map("updated_at")  @default(now()) @updatedAt
+}
+
+enum OperationType {
+  Debit
+  Credit
+}
+
+model AccountHistory {
+  @@map("account_history")
+
+  id             String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  //
+  account        Account  @relation(fields: [accountId], references: [id])
+  accountId      String  @map("account_id") @db.Uuid
+  transaction    Transaction  @relation(fields: [transactionId], references: [id])
+  transactionId  String  @map("transaction_id") @db.Uuid
+  //
+  operationType  OperationType
+  amount         Int
+  coefficient    Int      @default(100)  // real value = debit or credit / coefficient
+  //
+  createdAt      DateTime @map("created_at")  @default(now())
+  //
+  @@unique([transactionId, operationType])
+}
+
+
+// -------------- Transaction
+
+enum TransactionType {
+  TransferMoney
+}
+
+enum TransactionStatus {
+  Draft
+  Processing
+  Canceling
+  Canceled
+  Completed
+}
+
+enum TransactionAccountStatus {
+  None
+  Processing
+  Committed
+  Canceled
+}
+
+model Transaction {
+  @@map("transactions")
+
+  id                  String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  //
+  accountHistory      AccountHistory[]
+  //
+  type                TransactionType
+  status              TransactionStatus  @default(Draft)
+  error               String?
+  //
+  amount              Float?  @db.Real
+  //
+  accountFrom         Account  @relation("accountFrom", fields: [accountIdFrom], references: [id])
+  accountIdFrom       String  @map("account_id_from") @db.Uuid
+  accountFromStatus   TransactionAccountStatus @map("account_from_status") @default(None)
+  //
+  accountTo           Account  @relation("accountTo", fields: [accountIdTo], references: [id])
+  accountIdTo         String  @map("account_id_to") @db.Uuid
+  accountToStatus     TransactionAccountStatus @map("account_to_status") @default(None)
+  //
+  createdAt           DateTime @map("created_at")  @default(now())
+  updatedAt           DateTime @map("updated_at")  @default(now()) @updatedAt
+}
