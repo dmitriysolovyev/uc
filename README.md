@@ -30,11 +30,6 @@ Automated tests are required in order to prove the correctness of the provided
 - If needed the schema can be changed in order to support the new feature.
 
 
-Please submit your solution to coding.challenge@unleashedcapital.com.
-Feel free
-to contact us if you have any questions.
-
-
 ## Solution
 
 Using
